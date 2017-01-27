@@ -8,7 +8,17 @@ module Puppet::Parser::Functions
   ) do |arguments|
     require 'resolv'
 
-    res = Resolv::DNS.new
+    if arguments[2].is_a? String
+      config_info = {
+        :nameserver => arguments[2],
+        :search => arguments[3],
+        :ndots => 1
+      }
+    else
+      config_info = nil
+    end
+
+    res = Resolv::DNS.new(config_info)
     arg = arguments[0]
 
     ret = if arg.is_a? Array
